@@ -4,7 +4,7 @@
 This is a code executor for Dify that is compatible with official sandbox API calls and dependency installation.
 
 ## Purpose
-While the official sandbox has many permission-related settings and offers a better sandboxing solution, in personal use cases where Dify code nodes are entirely self-edited, code injection risks are minimal. This project aims to provide broader permissions and support for more dependency packages (such as numpy>2.0, matplotlib), while reducing confusing error messages. This code was developed by referencing the official sandbox's API call examples.
+While the official sandbox has many permission-related settings and offers a better sandboxing solution, in personal use cases where Dify code nodes are entirely self-edited, code injection risks are minimal. This project aims to provide broader permissions and support for more dependency packages (such as numpy>2.0, matplotlib, scikit-learn), while reducing confusing error messages. This code was developed by referencing the official sandbox's API call examples.
 
 ## Usage
 In the official docker-compose.yaml, locate the sandbox image section and replace it with:
