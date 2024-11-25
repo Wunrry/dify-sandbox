@@ -76,14 +76,14 @@ async def health_check():
 
 @app.post("/v1/sandbox/run")
 async def execute_code(request: CodeRequest):
-    if request.language != "python3":
+    if request.language not in ["python3", "nodejs"]:
         return {
             "code": -400,
             "message": "unsupported language",
             "data": None
         }
 
-    result = await executor.execute(request.code)
+    result = await executor.execute(request.code, request.language)
     
     return {
         "code": 0,
