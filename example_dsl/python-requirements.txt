@@ -1,0 +1,5 @@
+requests
+jinja2
+json_repair
+numpy
+matplotlib
