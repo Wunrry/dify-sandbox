@@ -28,10 +28,8 @@ Python support
 Node.js support
 ![](/images/Xnip2024-11-25_11-31-01.jpg)
 Docker container logs
-![](/images/Xnip2024-12-04_10-04-07.jpg)
+![](/images/Xnip2024-12-04_10-15-18.jpg)
 
-## Notes
-我来帮你翻译成地道的英文：
 
 ## Notes
 - Network access restrictions have been removed; network access is enabled by default
