@@ -28,7 +28,7 @@ Python support
 Node.js support
 ![](/images/Xnip2024-11-25_11-31-01.jpg)
 Docker container logs
-![](/images/Xnip2024-11-25_11-31-33.jpg)
+![](/images/Xnip2024-12-04_10-04-07.jpg)
 
 ## Notes
 我来帮你翻译成地道的英文：
