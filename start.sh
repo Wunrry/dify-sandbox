@@ -2,8 +2,8 @@
 
 # 检查并安装依赖
 if [ -f "/dependencies/python-requirements.txt" ]; then
-    echo "发现依赖文件，开始安装额外依赖..."
-    pip install --no-cache-dir -r /dependencies/python-requirements.txt
+    echo "Dependency file found, starting to install additional dependencies..."
+    uv pip install --system -r /dependencies/python-requirements.txt
 fi
 
 # 启动 FastAPI 应用

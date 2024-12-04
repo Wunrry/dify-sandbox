@@ -3,3 +3,4 @@ uvicorn
 starlette
 pydantic
 nodejs
+jinja2

@@ -13,7 +13,7 @@ In the official docker-compose.yaml, locate the sandbox image section and replac
 ```
   sandbox:
     # image: langgenius/dify-sandbox:0.2.10
-    image: svcvit/dify-sandbox-py:0.1.1
+    image: svcvit/dify-sandbox-py:0.1.2
 ```
 
 If you prefer to build the image yourself, you can clone this repository and run:
@@ -31,6 +31,10 @@ Docker container logs
 ![](/images/Xnip2024-11-25_11-31-33.jpg)
 
 ## Notes
-- Network access control has been removed, network access is enabled by default
-- Third-party dependency installation works the same as the official version - place your dependencies in `/docker/volumes/sandbox/dependencies/python-requirements.txt` and restart the sandbox
-- The image only includes FastAPI-related dependencies by default. Any additional dependencies you need must be added to python-requirements.txt
+我来帮你翻译成地道的英文：
+
+## Notes
+- Network access restrictions have been removed; network access is enabled by default
+- Using UV as the dependency manager for faster package installation, allowing millisecond-level dependency installation on restart
+- Third-party dependencies can be installed following the official method: simply add required dependencies to `/docker/volumes/sandbox/dependencies/python-requirements.txt` and restart the sandbox
+- The image only contains FastAPI-related dependencies. Any additional dependencies you need must be manually added to python-requirements.txt

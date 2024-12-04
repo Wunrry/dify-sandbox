@@ -1,4 +1,5 @@
 FROM python:3.12-slim-bookworm
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # 安装Node.js
 RUN apt-get update && \
@@ -14,8 +15,8 @@ WORKDIR /app
 # 复制依赖文件
 COPY requirements.txt .
 
-# 安装基础依赖
-RUN pip install --no-cache-dir -r requirements.txt
+# 使用 uv 安装基础依赖到系统环境
+RUN uv pip install --system -r requirements.txt
 
 # 复制应用代码和启动脚本
 COPY app/ ./app/
