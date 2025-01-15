@@ -25,7 +25,13 @@ class CodeRequest(BaseModel):
     code: str
     preload: Optional[str] = ""
     enable_network: Optional[bool] = False
-
+class PlotRequest(BaseModel):
+    x: list
+    y: list
+    title: Optional[str] = "Plot"
+    xlabel: Optional[str] = "X"
+    ylabel: Optional[str] = "Y"
+    
 # 认证中间件
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
