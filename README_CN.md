@@ -8,6 +8,23 @@
 ## 目的
 因为官方sandbox有很多关于权限的设置，那是一个更好的沙盒方案，但是个人实际使用过程中，Dify的代码节点完全是个人编辑，所以也不存在代码注入风险，希望有更大的权限，安装更多依赖包例如numpy>2.0，matplotlib，scikit-learn 减少一些看不懂的报错，因此参考官方sandbox的API调用示例，开发了本代码。
 
+## 修改部分
+wunrry根据需要，修改python部分，更适合数据分析
+1、增加默认安装包 numpy pandas matplotlib
+2、增加"/v1/sandbox/plot" endpoint 接收json文件，返回图像文件。
+使用示例：
+你可以使用以下 JSON 数据来测试新的 API 端点：
+```
+{
+    "x": [1, 2, 3, 4, 5],
+    "y": [10, 20, 25, 30, 40],
+    "title": "Sample Plot",
+    "xlabel": "X Axis",
+    "ylabel": "Y Axis"
+}
+```
+发送 POST 请求到 /v1/sandbox/plot 端点，将会返回一个 PNG 格式的图像。
+
 ## 用法
 在官方 docker-compose.yaml 中，找到 sandbox 的 image 部分内容，替换镜像即可。
 ```

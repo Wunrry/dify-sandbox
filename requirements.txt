@@ -4,3 +4,6 @@ starlette
 pydantic
 nodejs
 jinja2
+numpy
+pandas
+matplotlib

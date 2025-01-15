@@ -5,6 +5,9 @@ from typing import Optional
 import asyncio
 from .executor import CodeExecutor
 import os
+import matplotlib.pyplot as plt
+import io
+from fastapi.responses import StreamingResponse
 
 
 # 配置
@@ -94,6 +97,23 @@ async def execute_code(request: CodeRequest):
         }
     }
 
+@app.post("/v1/sandbox/plot")
+async def generate_plot(request: PlotRequest):
+    # 创建图像
+    plt.figure()
+    plt.plot(request.x, request.y)
+    plt.title(request.title)
+    plt.xlabel(request.xlabel)
+    plt.ylabel(request.ylabel)
+    
+    # 将图像保存到字节流
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    plt.close()
+    buf.seek(0)
+    
+    # 返回图像
+    return StreamingResponse(buf, media_type="image/png")
 
 if __name__ == "__main__":
     import uvicorn
