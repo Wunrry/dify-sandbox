@@ -8,6 +8,19 @@ A code executor for Dify that is compatible with the official sandbox API calls 
 ## Purpose
 While the official sandbox has many permission settings and is a better sandboxing solution, in personal use cases where Dify's code nodes are entirely self-edited, there's no risk of code injection. This project aims to provide broader permissions and support for more dependencies (like numpy>2.0, matplotlib, scikit-learn) to reduce confusing error messages. This code was developed by referencing the official sandbox's API call examples.
 
+## Modify part
+Modify the python part as needed, which is more suitable for data analysis. 1. Add the default installation package numpy pandas matplotlib 2. Add the "/v1/sandbox/plot" endpoint to receive json files and return image files. Usage example: You can use the following JSON data to test new API endpoints:
+```
+{
+    "x": [1, 2, 3, 4, 5],
+    "y": [10, 20, 25, 30, 40],
+    "title": "Sample Plot",
+    "xlabel": "X Axis",
+    "ylabel": "Y Axis"
+}
+```
+Sending a POST request to the /v1/sandbox/plot endpoint will return an image in PNG format.
+
 ## Usage
 In the official docker-compose.yaml, locate the sandbox image section and replace it with:
 ```
