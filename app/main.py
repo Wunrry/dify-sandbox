@@ -6,10 +6,16 @@ import asyncio
 from .executor import CodeExecutor
 import os
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import seaborn as sns
 import io
 from fastapi.responses import StreamingResponse
 import pandas as pd  
 from enum import Enum
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # 配置
 API_KEY = os.getenv("API_KEY", "dify-sandbox")
@@ -71,8 +77,8 @@ class PlotRequest(BaseModel):
     grid: Optional[bool] = False                  # 是否显示网格，默认为 False
     legend: Optional[bool] = False                # 是否显示图例，默认为 False
     legend_location: Optional[LegendLocation] = LegendLocation.BEST  # 图例位置
-    width: Optional[float] = 6.4                  # 图表宽度，默认 6.4 英寸
-    height: Optional[float] = 4.8                 # 图表高度，默认 4.8 英寸
+    width: Optional[float] = 12                  # 图表宽度
+    height: Optional[float] = 6                 # 图表高度
 
 class CSVPlotRequest(BaseModel):
     file_path: str
@@ -88,8 +94,8 @@ class CSVPlotRequest(BaseModel):
     grid: Optional[bool] = False                  # 是否显示网格，默认为 False
     legend: Optional[bool] = False                # 是否显示图例，默认为 False
     legend_location: Optional[LegendLocation] = LegendLocation.BEST  # 图例位置
-    width: Optional[float] = 6.4                  # 图表宽度，默认 6.4 英寸
-    height: Optional[float] = 4.8                 # 图表高度，默认 4.8 英寸
+    width: Optional[float] = 12                  # 图表宽度
+    height: Optional[float] = 6                 # 图表高度
     
 # 认证中间件
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -214,11 +220,17 @@ async def generate_plot(request: PlotRequest):
 @app.post("/v1/sandbox/csvplot")
 async def generate_csv_plot(request: CSVPlotRequest):
     try:
+        # 打印当前工作目录和文件路径
+        logger.info(f"Current working directory: {os.getcwd()}")
+        logger.info(f"Reading CSV file: {request.file_path}")
+        
         # 读取 CSV 文件
-        df = pd.read_csv(request.file_path)
+        df = pd.read_csv(request.file_path, sep=',', encoding='utf-8')
+        logger.info(f"CSV columns: {df.columns}")
         
         # 检查指定的列是否存在
         if request.x_column not in df.columns or request.y_column not in df.columns:
+            logger.error(f"Specified columns not found: x_column={request.x_column}, y_column={request.y_column}")
             return {
                 "code": -400,
                 "message": "Specified columns not found in CSV file",
@@ -226,8 +238,30 @@ async def generate_csv_plot(request: CSVPlotRequest):
             }
         
         # 提取 X 和 Y 列数据
-        x = df[request.x_column]
-        y = df[request.y_column]
+        try:
+            # 尝试将 x_column 转换为 datetime 类型
+            x = pd.to_datetime(df[request.x_column], errors='coerce')
+            if x.isnull().all():  # 如果全部转换失败，说明不是时间格式
+                logger.info(f"x_column is not a datetime format, trying numeric...")
+                x = pd.to_numeric(df[request.x_column], errors='coerce')  # 尝试转换为数值类型
+                if x.isnull().all():  # 如果仍然全部转换失败，说明是字符串格式
+                    logger.info(f"x_column is not numeric, treating as string/categorical.")
+                    x = df[request.x_column].astype(str)  # 直接使用字符串格式
+            y = pd.to_numeric(df[request.y_column], errors='coerce')  # 转换为数值类型
+        except Exception as e:
+            logger.error(f"Failed to convert columns: {str(e)}")
+            return {
+                "code": -400,
+                "message": f"Failed to convert columns: {str(e)}",
+                "data": None
+            }
+        
+        # 检查是否有无效值
+        if x.isnull().any() or y.isnull().any():
+            logger.warning(f"Invalid values found in x_column or y_column. Rows with NaN/NaT will be dropped.")
+            df_cleaned = df.dropna(subset=[request.x_column, request.y_column])  # 删除包含 NaN/NaT 的行
+            x = df_cleaned[request.x_column]
+            y = pd.to_numeric(df_cleaned[request.y_column])
         
         # 设置图表尺寸
         plt.figure(figsize=(request.width, request.height))
@@ -260,6 +294,15 @@ async def generate_csv_plot(request: CSVPlotRequest):
         plt.xlabel(request.xlabel)
         plt.ylabel(request.ylabel)
         
+        # 根据 x_column 的数据类型调整 X 轴格式
+        if pd.api.types.is_datetime64_any_dtype(x):  # 如果是时间格式
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 设置日期格式
+            plt.gcf().autofmt_xdate()  # 自动旋转日期标签
+        elif pd.api.types.is_numeric_dtype(x):  # 如果是数值格式
+            pass  # 无需特殊处理
+        else:  # 如果是字符串/分类格式
+            plt.xticks(rotation=45)  # 旋转 X 轴标签，避免重叠
+        
         # 显示网格
         if request.grid:
             plt.grid(True)
@@ -278,12 +321,14 @@ async def generate_csv_plot(request: CSVPlotRequest):
         return StreamingResponse(buf, media_type="image/png")
     
     except FileNotFoundError:
+        logger.error(f"CSV file not found: {request.file_path}")
         return {
             "code": -404,
             "message": "CSV file not found",
             "data": None
         }
     except Exception as e:
+        logger.error(f"An error occurred: {str(e)}")
         return {
             "code": -500,
             "message": f"An error occurred: {str(e)}",
