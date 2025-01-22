@@ -7,6 +7,7 @@ RUN apt-get update && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     apt-get clean && \
+    apt-get install -y fonts-wqy-zenhei fonts-noto-cjk && \
     rm -rf /var/lib/apt/lists/*
 
 # 设置工作目录
