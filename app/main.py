@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 API_KEY = os.getenv("API_KEY", "dify-sandbox")
 MAX_REQUESTS = int(os.getenv("MAX_REQUESTS", "100"))
 MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
-WORKER_TIMEOUT = int(os.getenv("MAX_WORKERS", "15"))
+WORKER_TIMEOUT = int(os.getenv("WORKER_TIMEOUT", "15"))
 
 app = FastAPI()
 executor = CodeExecutor(timeout=WORKER_TIMEOUT, max_workers=MAX_WORKERS)
