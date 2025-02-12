@@ -341,7 +341,7 @@ async def generate_csv_plot(request: CSVPlotRequest):
         
         # 根据 x_column 的数据类型调整 X 轴格式
         if pd.api.types.is_datetime64_any_dtype(x):  # 如果是时间格式
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H'))  # 设置日期格式  '%Y-%m-%d %H:%M:%S'
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 设置日期格式  '%Y-%m-%d %H:%M:%S'
             plt.gcf().autofmt_xdate()  # 自动旋转日期标签
         elif pd.api.types.is_numeric_dtype(x):  # 如果是数值格式
             pass  # 无需特殊处理
@@ -459,7 +459,7 @@ async def generate_csv_plot(request: CSVPlotRequest):
         
         # 根据 x_column 的数据类型调整 X 轴格式
         if pd.api.types.is_datetime64_any_dtype(x):  # 如果是时间格式
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d %H:%M:%S'))  # 设置日期格式  '%Y-%m-%d %H:%M:%S'
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 设置日期格式  '%Y-%m-%d %H:%M:%S'
             plt.gcf().autofmt_xdate()  # 自动旋转日期标签
         elif pd.api.types.is_numeric_dtype(x):  # 如果是数值格式
             pass  # 无需特殊处理
@@ -577,7 +577,7 @@ async def generate_double_line_plot(request: DoubleLinePlotRequest):
         
         # 根据 x_column 的数据类型调整 X 轴格式
         if pd.api.types.is_datetime64_any_dtype(x):  # 如果是时间格式
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H'))  # 设置日期格式
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 设置日期格式
             plt.gcf().autofmt_xdate()  # 自动旋转日期标签
         elif pd.api.types.is_numeric_dtype(x):  # 如果是数值格式
             pass  # 无需特殊处理
@@ -713,7 +713,7 @@ async def generate_combined_y_plot(request: CombinedYPlotRequest):
         
         # 根据 x_column 的数据类型调整 X 轴格式
         if pd.api.types.is_datetime64_any_dtype(x):  # 如果是时间格式
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H'))  # 设置日期格式
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 设置日期格式
             plt.gcf().autofmt_xdate()  # 自动旋转日期标签
         elif pd.api.types.is_numeric_dtype(x):  # 如果是数值格式
             pass  # 无需特殊处理
